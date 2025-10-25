@@ -66,7 +66,7 @@ streamlit run auto.py
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url>
+git clone https://github.com/saksham-jain177/Automated-Data-Analysis-and-Visualization
    cd Automated-Data-Analysis-and-Visualization
 
 # 2. Create virtual environment (recommended)
