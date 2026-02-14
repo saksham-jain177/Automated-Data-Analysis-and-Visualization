@@ -1,20 +1,28 @@
+# Core
 streamlit
 pandas
-numpy<2.0  # pmdarima compatibility
-matplotlib
-seaborn
+numpy
 plotly
 scikit-learn
-setuptools
+scipy>=1.10
+
+# ML / AutoML
 flaml[automl]==2.*
-pydantic==2.*
-pydantic-settings==2.*
-openai>=1.40
-pmdarima>=2.0
 xgboost>=2.0
 lightgbm>=4.0
-scipy>=1.10
+imbalanced-learn>=0.11
+
+# Config
+pydantic==2.*
+pydantic-settings==2.*
+
+# Chat (OpenRouter)
+openai>=1.40
+
+# Time-series
+pmdarima>=2.0
+
+# File format support
 pyarrow>=14
 openpyxl>=3.1
-imbalanced-learn>=0.11
-shap>=0.44
+setuptools
