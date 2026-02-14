@@ -63,7 +63,7 @@ def render_app():
     st.success(msg)
 
     # ── Section: Data Preparation ──
-    cleaned_df, preprocessor, prep_report, prep_cfg = render_data_prep(df, settings, guided)
+    cleaned_df, feat_df, preprocessor, prep_report, prep_cfg = render_data_prep(df, settings, guided)
 
     # ── Data Preview ──
     st.write("Data Preview:")

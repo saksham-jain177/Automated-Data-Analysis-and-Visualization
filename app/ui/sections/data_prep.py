@@ -58,30 +58,46 @@ def render_data_prep(df: pd.DataFrame, settings, guided: bool):
 
     enable = st.checkbox("🚀 Enable Data Preparation", True)
     if not enable:
-        return df.copy(), None, None, _make_config_dict(impute_num, impute_cat, scaling, add_poly, poly_degree)
+        return df.copy(), df.copy(), None, None, _make_config_dict(impute_num, impute_cat, scaling, add_poly, poly_degree)
 
     with st.spinner("Running unified data preparation pipeline..."):
-        cc = CleaningConfig(
-            imputation_method=cleaning_imputation, outlier_method=outlier_method,
-            outlier_threshold=outlier_threshold, aggressive=settings.aggressive_cleaning,
-            handle_duplicates=handle_duplicates, correct_types=correct_types,
-        )
-        fc = FeatureConfig(
-            impute_strategy_num=impute_num, impute_strategy_cat=impute_cat,
-            scaling=scaling, one_hot_drop="if_binary", add_polynomial=add_poly, poly_degree=poly_degree,
-        )
-        proc = UnifiedDataPreprocessor(cc, fc)
-        cleaned_df, c_report = proc.clean_data(df)
-        feat_df, preprocessor, f_report = proc.engineer_features(cleaned_df)
-        report = {
-            "cleaning": c_report, "feature_engineering": f_report,
-            "configuration": {"cleaning": vars(cc), "feature_engineering": vars(fc)},
-            "processing_log": proc.preprocessing_log,
+        # Create config dictionaries (hashable)
+        cc_dict = {
+            "imputation_method": cleaning_imputation, "outlier_method": outlier_method,
+            "outlier_threshold": outlier_threshold, "aggressive": settings.aggressive_cleaning,
+            "handle_duplicates": handle_duplicates, "correct_types": correct_types,
         }
+        fc_dict = {
+            "impute_strategy_num": impute_num, "impute_strategy_cat": impute_cat,
+            "scaling": scaling, "one_hot_drop": "if_binary",
+            "add_polynomial": add_poly, "poly_degree": poly_degree,
+        }
+        
+        cleaned_df, feat_df, preprocessor, report = _run_preprocessing_cached(df, cc_dict, fc_dict)
         display_unified_preprocessing_report(report)
 
     cfg = _make_config_dict(impute_num, impute_cat, scaling, add_poly, poly_degree)
-    return feat_df, preprocessor, report, cfg
+    return cleaned_df, feat_df, preprocessor, report, cfg
+
+
+@st.cache_data(show_spinner=False)
+def _run_preprocessing_cached(df: pd.DataFrame, cc_dict: dict, fc_dict: dict):
+    """Cached execution of the unified pipeline."""
+    cc = CleaningConfig(**cc_dict)
+    fc = FeatureConfig(**fc_dict)
+    proc = UnifiedDataPreprocessor(cc, fc)
+    
+    cleaned_df, c_report = proc.clean_data(df)
+    feat_df, preprocessor, f_report = proc.engineer_features(cleaned_df)
+    
+    report = {
+        "cleaning": c_report, "feature_engineering": f_report,
+        "configuration": {"cleaning": cc_dict, "feature_engineering": fc_dict},
+        "processing_log": proc.preprocessing_log,
+    }
+    return cleaned_df, feat_df, preprocessor, report
+
+
 
 
 def _make_config_dict(impute_num, impute_cat, scaling, add_poly, poly_degree):

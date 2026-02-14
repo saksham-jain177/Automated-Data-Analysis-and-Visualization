@@ -36,8 +36,11 @@ def render_chat(df: pd.DataFrame, settings):
                 st.warning("Could not create chart.")
 
     # LLM chat
-    user_msg = st.text_input("🤔 Ask a question about your data")
-    if st.button("Ask") and user_msg:
+    st.markdown("---")
+    consent = st.checkbox("🔒 I agree to send data snippets to OpenRouter (external API) for processing", value=False)
+    
+    user_msg = st.text_input("🤔 Ask a question about your data", disabled=not consent)
+    if st.button("Ask", disabled=not consent) and user_msg and consent:
         with st.spinner("Thinking..."):
             reply = chat_with_openrouter(
                 api_key=settings.openrouter_api_key,
