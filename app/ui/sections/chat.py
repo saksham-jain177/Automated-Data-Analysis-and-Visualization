@@ -4,14 +4,14 @@ import pandas as pd
 import streamlit as st
 from ..helpers import safe_df_for_display
 from ...chat.rag import DataRAG
-from ...chat.assistant import chat_with_openrouter
+from ...chat.assistant import chat_with_llm
 from ...viz.charts import parse_nl_chart, create_chart
 
 
 def render_chat(df: pd.DataFrame, settings):
     """Render the chat section with RAG retrieval."""
     st.subheader("💬 Chat with your data")
-    st.caption(f"Model: {settings.openrouter_model} | RAG-powered context retrieval")
+    st.caption(f"Local AI: {settings.llm_model} | RAG-powered context retrieval")
 
     # Build RAG index (cached in session state)
     if "rag_index" not in st.session_state or st.session_state.get("rag_df_id") != id(df):
@@ -37,14 +37,14 @@ def render_chat(df: pd.DataFrame, settings):
 
     # LLM chat
     st.markdown("---")
-    consent = st.checkbox("🔒 I agree to send data snippets to OpenRouter (external API) for processing", value=False)
     
-    user_msg = st.text_input("🤔 Ask a question about your data", disabled=not consent)
-    if st.button("Ask", disabled=not consent) and user_msg and consent:
-        with st.spinner("Thinking..."):
-            reply = chat_with_openrouter(
-                api_key=settings.openrouter_api_key,
-                model=settings.openrouter_model,
+    user_msg = st.text_input("🤔 Ask a question about your data")
+    if st.button("Ask") and user_msg:
+        with st.spinner(f"Thinking ({settings.llm_model})..."):
+            reply = chat_with_llm(
+                api_base=settings.llm_api_base,
+                api_key=settings.llm_api_key,
+                model=settings.llm_model,
                 user_message=user_msg,
                 rag=rag,
                 history=st.session_state.get("chat_history"),

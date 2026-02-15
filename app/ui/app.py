@@ -87,11 +87,24 @@ def render_app():
         
         cleaned_df, _, _, _, _ = results
         
-        st.subheader("👀 Data Preview")
+        st.subheader("👀 Data Snapshot")
+        st.markdown("**Get a realistic look at your data.** Adjust the view to spot checks or explore the full dataset.", help="This is the data after cleaning steps have been applied.")
+        
+        c1, c2 = st.columns([2, 1])
+        with c1:
+            rows_to_show = st.slider("Rows to preview", 5, 100, 10, key="preview_rows")
+        with c2:
+            show_all = st.toggle("🔍 Browse full dataset", help="Enable scrolling through all data")
+
         try:
-            st.dataframe(safe_df_for_display(cleaned_df.head()))
-        except Exception:
-            st.table(safe_df_for_display(cleaned_df.head()))
+            if show_all:
+                st.dataframe(safe_df_for_display(cleaned_df), use_container_width=True, height=500)
+                st.caption(f"Showing all {len(cleaned_df)} rows. You can sort and search within the table.")
+            else:
+                st.dataframe(safe_df_for_display(cleaned_df.head(rows_to_show)), use_container_width=True)
+                st.caption(f"Showing first {rows_to_show} rows.")
+        except Exception as e:
+            st.error(f"Could not render data table: {e}")
 
     # Unpack current state for other pages
     cleaned_df, feat_df, preprocessor, prep_report, prep_cfg = st.session_state.processed_data

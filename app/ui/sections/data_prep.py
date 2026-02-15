@@ -33,26 +33,28 @@ def render_data_prep(df: pd.DataFrame, settings, guided: bool):
                 c1, c2 = st.columns(2)
                 with c1:
                     cleaning_imputation = st.selectbox(
-                        "Missing Data Strategy", ["median", "mean", "knn", "mode"],
+                        "How to handle missing values", ["median", "mean", "knn", "mode"],
                         index=["median", "mean", "knn", "mode"].index(settings.imputation_method),
+                        help="Choose how to fill in empty cells."
                     )
-                    handle_duplicates = st.checkbox("Remove Duplicates", True)
+                    handle_duplicates = st.checkbox("Remove Duplicate Rows", True)
                 with c2:
                     outlier_method = st.selectbox(
-                        "Outlier Detection", ["iqr", "zscore", "none"],
+                        "How to handle outliers (weird values)", ["iqr", "zscore", "none"],
                         index=["iqr", "zscore", "none"].index(settings.outlier_method),
+                        help="Detect and remove values that are statistically unusual."
                     )
-                    correct_types = st.checkbox("Auto-correct Types", True)
+                    correct_types = st.checkbox("Auto-correct Data Types", True)
                 if outlier_method != "none":
-                    outlier_threshold = st.slider("Outlier Threshold", 1.0, 3.0, float(settings.outlier_threshold), 0.1)
+                    outlier_threshold = st.slider("Strictness (Threshold)", 1.0, 3.0, float(settings.outlier_threshold), 0.1, help="Lower values remove more data.")
             with t2:
                 c1, c2 = st.columns(2)
                 with c1:
-                    impute_num = st.selectbox("Numeric Imputation", ["mean", "median", "most_frequent"], index=1)
-                    scaling = st.selectbox("Feature Scaling", ["none", "standard", "minmax"], index=1)
+                    impute_num = st.selectbox("Fill missing numbers with:", ["mean", "median", "most_frequent"], index=1)
+                    scaling = st.selectbox("Scale numbers range", ["none", "standard", "minmax"], index=1, help="Standard: centered around 0. MinMax: between 0 and 1.")
                 with c2:
-                    impute_cat = st.selectbox("Categorical Imputation", ["most_frequent", "constant"], index=0)
-                    add_poly = st.checkbox("Add Polynomial Features", False)
+                    impute_cat = st.selectbox("Fill missing text with:", ["most_frequent", "constant"], index=0)
+                    add_poly = st.checkbox("Create complex features (Polynomial)", False, help="Generate interactions like A*B or A^2 for better model performance.")
                 if add_poly:
                     poly_degree = st.slider("Polynomial Degree", 2, 3, 2)
 

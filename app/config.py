@@ -17,9 +17,12 @@ class AppSettings(BaseSettings):
     max_plot_samples: int = Field(5000, description="Max rows sampled for plots")
     corr_method: str = Field("pearson", description="Correlation method for heatmaps")
     model_cache_dir: str = Field("models", description="Directory to save trained models")
-    guided_mode_default: bool = Field(True, description="Show simplified guided UI by default")
-    openrouter_api_key: str | None = Field(None, description="OpenRouter API key for chat assistant")
-    openrouter_model: str = Field("openrouter/auto", description="Default OpenRouter model identifier")
+
+    
+    # Local LLM configuration (Ollama)
+    llm_api_base: str = Field("http://localhost:11434/v1", description="Base URL for local LLM (Ollama)")
+    llm_model: str = Field("llama3", description="Model name to use (e.g. llama3, mistral)")
+    llm_api_key: str = Field("ollama", description="Dummy API key for local LLM compatibility")
     
     # Agentic preprocessing configuration
     imputation_method: str = Field("median", description="Method for missing data imputation: mean, median, knn, mode")

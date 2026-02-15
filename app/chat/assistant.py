@@ -29,8 +29,9 @@ def _build_messages(
     return messages
 
 
-def chat_with_openrouter(
-    api_key: Optional[str],
+def chat_with_llm(
+    api_base: str,
+    api_key: str,
     model: str,
     user_message: str,
     df_context: Optional[pd.DataFrame] = None,
@@ -38,23 +39,8 @@ def chat_with_openrouter(
     rag: Optional[DataRAG] = None,
     top_k: int = 8,
 ) -> str:
-    """Send a chat message to OpenRouter with RAG-enriched context.
-
-    Args:
-        api_key: OpenRouter API key
-        model: Model identifier (e.g. 'openai/gpt-4o-mini')
-        user_message: The user's question
-        df_context: The uploaded DataFrame (used to build RAG if rag is None)
-        history: Recent chat history
-        rag: Pre-built DataRAG instance (recommended for reuse)
-        top_k: Number of context chunks to retrieve
-
-    Returns:
-        The assistant's reply string
-    """
-    if not api_key:
-        return "⚠️ No API key configured. Set `ADV_OPENROUTER_API_KEY` in your `.env` file."
-
+    """Send a chat message to a local LLM (Ollama) with RAG-enriched context."""
+    
     # Build or reuse the RAG index
     if rag is None and df_context is not None:
         rag = DataRAG(df_context)
@@ -71,10 +57,10 @@ def chat_with_openrouter(
         from openai import OpenAI
 
         client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=api_base,
             api_key=api_key,
         )
         response = client.chat.completions.create(model=model, messages=messages)
         return response.choices[0].message.content or ""
     except Exception as exc:
-        return f"❌ Error calling OpenRouter: {exc}"
+        return f"❌ Error connecting to Local AI: {exc}\n\nMake sure Ollama is running (`ollama serve`) and you have pulled the model (`ollama pull {model}`)."

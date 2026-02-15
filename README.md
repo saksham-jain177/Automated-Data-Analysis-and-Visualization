@@ -1,155 +1,106 @@
 # 📊 Automated Data Analysis & Visualization
 
-**Intelligent, configurable platform for data preprocessing, ML modeling, and forecasting**
+**Intelligent, modular platform for data preprocessing, ML modeling, and AI-powered insights.**
 
 ### 🎯 Overview
 
-Streamlit app with **agentic data preprocessing**, modular ML pipelines, and advanced configuration. No hardcoded defaults—all strategies are configurable via environment variables.
+A modern Streamlit application designed for automated data science. It features **agentic data cleaning**, **modular ML pipelines**, **RAG-powered chat**, and a **sidebar navigation** workflow. Built for performance with caching and privacy controls.
 
-### 📚 Documentation
+### ✨ Key Features
 
-- 📖 **[USER_GUIDE.md](USER_GUIDE.md)** - Complete user guide
-- 🏗️ **[VISION.md](VISION.md)** - Architecture and vision
+#### 🛡️ modular & Optimized Core
 
-### Key Features
+- **Agentic Preprocessing**: Configurable imputation, outlier detection, and type correction.
+- **Cached Pipeline**: Heavy processing runs once and is cached for instant page nav.
+- **Privacy-First**: Data stays local. External LLM calls (OpenRouter) require explicit opt-in.
 
-#### 🤖 Agentic Data Preprocessing
-- **Quality Assessment**: 0-100 score with detailed report
-- **Intelligent Imputation**: median, mean, KNN, mode (configurable)
-- **Outlier Detection**: IQR, Z-score, or none (configurable)
-- **Type Correction**: Auto-detect and fix column types
-- **No hardcoded defaults**: All strategies via `ADV_` env vars
+#### 🤖 RAG-Powered AI Chat
 
-#### 🔬 Machine Learning
-- **Sklearn Pipelines**: ColumnTransformer with proper preprocessing
-- **Cross-validation**: Stratified for classification, standard for regression
-- **Feature Importance**: Permutation-based, model-agnostic
-- **AutoML (FLAML)**: Time-budgeted model search
-- **Advanced Models**: XGBoost, LightGBM, Random Forest, etc.
+- **Context-Aware**: Uses TF-IDF retrieval to find relevant data chunks for the LLM.
+- **Grounded Answers**: The AI answers based on _your_ data, not just general knowledge.
+- **Transparency**: View the exact data chunks retrieved for each answer.
 
-#### 📈 Analysis & Forecasting
-- **Time Series**: ARIMA via pmdarima with auto period parsing
-- **Multi-format**: CSV, Excel, JSON, Parquet
-- **Smart Sampling**: Handle large datasets efficiently
-- **Auto Dashboard**: Recommended charts with HTML export
+#### 🔬 Machine Learning & AutoML
 
-#### 💬 AI Assistant
-- **Chat with data**: OpenRouter API integration
-- **Guided/Advanced modes**: Toggle complexity
-- **Tutorial system**: Sample datasets and onboarding
+- **Automated Modeling**: Auto-selects best models (XGBoost, LightGBM, Random Forest).
+- **Time Series**: ARIMA forecasting with auto-period detection.
+- **Explainability**: Permutation feature importance and model evaluation metrics.
 
-### 🚀 Quick Start (30 Seconds)
+#### 📊 Advanced Visualization
 
-**IMPORTANT: Always run from the virtual environment!**
+- **Natural Language Charts**: "scatter price vs age", "histogram of salary"
+- **Smart Sampling**: Handles large datasets efficiently.
+- **Interactive UI**: Plotly charts with zoom/pan.
+
+### 🚀 Quick Start
+
+**Prerequisites**: Python 3.9+
 
 ```bash
-# Windows:
-run.bat
-
-# Or manually:
-.\.venv\Scripts\streamlit run auto.py
-
-# Linux/Mac:
-source .venv/bin/activate
-streamlit run auto.py
-```
-
-**First time setup:**
-1. Create venv: `python -m venv .venv`
-2. Activate: `.\.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` (Linux/Mac)
-3. Install: `pip install -r requirements.txt`
-4. Run: `streamlit run auto.py` or use `run.bat` (Windows)
-
-**That's it!** The app handles everything automatically.
-
-### 📖 Detailed Installation
-
-```bash
-# 1. Clone the repository
+# 1. Clone & Setup
 git clone https://github.com/saksham-jain177/Automated-Data-Analysis-and-Visualization
-   cd Automated-Data-Analysis-and-Visualization
-
-# 2. Create virtual environment (recommended)
+cd Automated-Data-Analysis-and-Visualization
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# 3. Install dependencies
-   pip install -r requirements.txt
+# 2. Activate
+# Windows:
+.\.venv\Scripts\activate
+# Mac/Linux:
+source .venv/bin/activate
 
-# 4. Optional: Set up environment variables
-cp .env.example .env
-# Edit .env with your settings (API keys, etc.)
+# 3. Install
+pip install -r requirements.txt
 
-# 5. Run the app
+# 4. Run
 streamlit run auto.py
 ```
 
-**Browser will open automatically at** `http://localhost:8501`
+### 📂 Project Structure
 
-### Auto Dashboard & NL Charts
+The project is refactored into domain-specific packages for maintainability:
 
-- The app suggests a few charts automatically in Guided mode and allows you to download them as a single HTML report.
-- Use the "Quick chart command" box to render charts with simple commands:
-  - `hist <numeric_col>`
-  - `scatter <x> vs <y>`
-  - `bar avg <y> by <x>`
-
-### Time Series Forecasting
-
-- Select your time column (e.g., `Period`) and value column (e.g., `Data_value`).
-- Click "Run forecast" to fit ARIMA and plot the next periods with confidence intervals.
-- If `pmdarima` is missing, install with `pip install pmdarima`.
-
-### Configuration (ENV VARS)
-
-All behavior is configurable via environment variables with `ADV_` prefix:
-
-**Data Preprocessing:**
-- `ADV_IMPUTATION_METHOD` (median) - mean, median, knn, mode
-- `ADV_OUTLIER_METHOD` (iqr) - iqr, zscore, none
-- `ADV_OUTLIER_THRESHOLD` (1.5) - IQR multiplier or Z-score threshold
-- `ADV_AGGRESSIVE_CLEANING` (false) - Always handle outliers
-
-**Machine Learning:**
-- `ADV_RANDOM_STATE` (42)
-- `ADV_CV_FOLDS` (5)
-- `ADV_AUTOML_ENABLED` (false)
-- `ADV_AUTOML_TIME_BUDGET` (30)
-
-**UI & Visualization:**
-- `ADV_GUIDED_MODE_DEFAULT` (true)
-- `ADV_MAX_PLOT_SAMPLES` (5000)
-- `ADV_CORR_METHOD` (pearson)
-
-**AI Assistant:**
-- `ADV_OPENROUTER_API_KEY` (unset)
-- `ADV_OPENROUTER_MODEL` (openrouter/auto)
-
-### Project Structure
-
-```
+```text
 app/
-  __init__.py
-  config.py            # Pydantic settings (no hardcoding)
-  preprocessing.py     # ColumnTransformer pipelines
-  modeling.py          # CV, importance, AutoML hooks
-  ui.py                # Streamlit UI (Guided + Advanced)
-  chat.py              # OpenRouter chat helper (optional)
-auto.py                # Entry point delegating to app.ui
+├── core/           # Data loading, quality, caching, optimization
+├── analysis/       # EDA, insights generation, time-series logic
+├── ml/             # Machine learning models, AutoML, evaluation
+├── viz/            # Chart generation, NL parsing
+├── chat/           # RAG retrieval (TF-IDF), LLM client
+└── ui/             # Streamlit interface
+    ├── sections/   # Modular UI pages (Data Setup, Explore, ML, Report)
+    └── app.py      # Main UI orchestrator
 ```
 
-### Roadmap / Ideas
+### ⚙️ Configuration
 
-- Regression tasks detection and metrics
-- SHAP explanations for tree/linear models
-- Model persistence and download
-- Data quality checks and drift detection
- - Natural language chart generation via chat commands
+Configure the app via `.env` file or environment variables. All settings have `ADV_` prefix.
 
-### Contributing
+**Local AI (Ollama):**
 
-PRs welcome. Please keep code modular, typed where helpful, and avoid hardcoding. Add concise comments explaining function purpose.
+- `ADV_LLM_API_BASE`: Base URL (default: `http://localhost:11434/v1`)
+- `ADV_LLM_MODEL`: Model name (default: `llama3`)
+- `ADV_LLM_API_KEY`: Dummy key (default: `ollama`)
 
-### License
+### 🤖 Local AI Setup (Ollama)
 
-MIT (see `LICENSE`).
+1. **Install Ollama**: Download from [ollama.com](https://ollama.com).
+2. **Pull a Model**: Run `ollama pull llama3` (or any other model supported by Ollama).
+3. **Run Ollama**: Keep `ollama serve` running in the background.
+4. **Configure App**: The app defaults to `http://localhost:11434/v1` and `llama3`. If you use a different model or port, set `ADV_LLM_MODEL` or `ADV_LLM_API_BASE` in `.env`.
+
+**Data Processing Defaults:**
+
+- `ADV_IMPUTATION_METHOD`: median, mean, knn, mode
+- `ADV_OUTLIER_METHOD`: iqr, zscore, none
+- `ADV_CV_FOLDS`: 5
+
+### 🤝 Contributing
+
+Contributions are welcome! Please ensure you follow the modular structure.
+
+- **UI changes** go in `app/ui/`
+- **Logic changes** go in `app/core/`, `app/ml/`, etc.
+
+### 📄 License
+
+MIT
