@@ -52,7 +52,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 4. Run
-streamlit run auto.py
+streamlit run app/main.py
 ```
 
 ### 📂 Project Structure
