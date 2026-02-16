@@ -38,12 +38,12 @@ def render_report(df: pd.DataFrame, insights: list, quality: dict, cards: dict, 
     })
     st.download_button("Download insights.json", json.dumps(export, indent=2), "insights.json", "application/json")
     try:
-        st.download_button("Download summary_stats.csv", df.describe(include="all").to_csv(), "summary_stats.csv", "text/csv")
+        st.download_button("Download overall stats.csv", df.describe(include="all").to_csv(), "summary_stats.csv", "text/csv")
     except Exception:
         pass
-    st.download_button("Download missing_values.csv", df.isnull().sum().reset_index().to_csv(index=False), "missing_values.csv", "text/csv")
+    st.download_button("Download missing_values_report.csv", df.isnull().sum().reset_index().to_csv(index=False), "missing_values.csv", "text/csv")
     if num_cols:
-        st.download_button("Download correlation.csv", df[num_cols].corr(method=settings.corr_method).to_csv(), "correlation.csv", "text/csv")
+        st.download_button("Download correlations.csv", df[num_cols].corr(method=settings.corr_method).to_csv(), "correlation.csv", "text/csv")
 
 
 def _build_markdown(data: dict) -> str:

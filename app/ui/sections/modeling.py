@@ -43,7 +43,7 @@ def render_modeling(df: pd.DataFrame, preprocessor, settings, guided: bool, prep
     if guided:
         with st.spinner("🤖 Selecting best model..."):
             selected_model = auto_select_model(X, y, task_type)
-        st.success(f"✓ **{type(selected_model).__name__}** selected via cross-validation")
+        st.success(f"✓ **{type(selected_model).__name__}** selected (best performance on test data)")
     else:
         avail = ["Logistic Regression", "Random Forest", "Extra Trees", "AdaBoost", "Gradient Boosting"]
         if XGBOOST_AVAILABLE:
@@ -68,20 +68,24 @@ def render_modeling(df: pd.DataFrame, preprocessor, settings, guided: bool, prep
 
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("📊 Evaluate Model", use_container_width=True):
-            with st.spinner("Testing model accuracy..."):
+        if st.button("📊 Evaluate Performance", use_container_width=True, help="Test how well the model predicts"):
+            with st.spinner("Testing model accuracy on hidden data..."):
                 st.session_state.eval_results = evaluate_with_cv(pipeline, X, y, settings.cv_folds, settings.random_state)
     with c2:
-        if st.button("🔍 Feature Importance", use_container_width=True):
-            with st.spinner("Analyzing features..."):
+        if st.button("🔍 What drives the prediction?", use_container_width=True, help="See which columns have the most impact"):
+            with st.spinner("Analyzing patterns..."):
                 fitted = pipeline.fit(X, y)
                 st.session_state.feature_importance = compute_permutation_importance(fitted, X, y, random_state=settings.random_state)
 
     if st.session_state.eval_results:
         st.success("✓ Evaluation complete!")
-        st.json(st.session_state.eval_results["summary"])
+        with st.expander("📈 Detailed Performance Metrics", expanded=True):
+            st.json(st.session_state.eval_results["summary"])
+            st.caption("Lower error is better for regression. Higher accuracy is better for classification.")
+            
     if st.session_state.feature_importance is not None:
-        st.success("✓ Top features:")
+        st.success("✓ Key Drivers Identified")
+        st.caption("These columns have the biggest impact on the target.")
         st.dataframe(st.session_state.feature_importance.head(15))
 
     # AutoML
