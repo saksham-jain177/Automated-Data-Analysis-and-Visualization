@@ -1,38 +1,38 @@
-# 📊 Automated Data Analysis & Visualization
+# Automated Data Analysis & Visualization
 
 **Intelligent, modular platform for data preprocessing, ML modeling, and AI-powered insights.**
 
-### 🎯 Overview
+### Overview
 
 A modern Streamlit application designed for automated data science. It features **agentic data cleaning**, **modular ML pipelines**, **RAG-powered chat**, and a **sidebar navigation** workflow. Built for performance with caching and privacy controls.
 
-### ✨ Key Features
+### Key Features
 
-#### 🛡️ modular & Optimized Core
+#### modular & Optimized Core
 
 - **Agentic Preprocessing**: Configurable imputation, outlier detection, and type correction.
 - **Cached Pipeline**: Heavy processing runs once and is cached for instant page nav.
 - **Privacy-First**: Data stays local. External LLM calls (OpenRouter) require explicit opt-in.
 
-#### 🤖 RAG-Powered AI Chat
+#### RAG-Powered AI Chat
 
 - **Context-Aware**: Uses TF-IDF retrieval to find relevant data chunks for the LLM.
 - **Grounded Answers**: The AI answers based on _your_ data, not just general knowledge.
 - **Transparency**: View the exact data chunks retrieved for each answer.
 
-#### 🔬 Machine Learning & AutoML
+#### Machine Learning & AutoML
 
 - **Automated Modeling**: Auto-selects best models (XGBoost, LightGBM, Random Forest).
 - **Time Series**: ARIMA forecasting with auto-period detection.
 - **Explainability**: Permutation feature importance and model evaluation metrics.
 
-#### 📊 Advanced Visualization
+#### Advanced Visualization
 
 - **Natural Language Charts**: "scatter price vs age", "histogram of salary"
 - **Smart Sampling**: Handles large datasets efficiently.
 - **Interactive UI**: Plotly charts with zoom/pan.
 
-### 🚀 Quick Start
+### Quick Start
 
 **Prerequisites**: Python 3.9+
 
@@ -55,7 +55,7 @@ pip install -r requirements.txt
 streamlit run app/main.py
 ```
 
-### 📂 Project Structure
+### Project Structure
 
 The project is refactored into domain-specific packages for maintainability:
 
@@ -71,7 +71,7 @@ app/
     └── app.py      # Main UI orchestrator
 ```
 
-### ⚙️ Configuration
+### Configuration
 
 Configure the app via `.env` file or environment variables. All settings have `ADV_` prefix.
 
@@ -81,7 +81,7 @@ Configure the app via `.env` file or environment variables. All settings have `A
 - `ADV_LLM_MODEL`: Model name (default: `llama3`)
 - `ADV_LLM_API_KEY`: Dummy key (default: `ollama`)
 
-### 🤖 Local AI Setup (Ollama)
+### Local AI Setup (Ollama)
 
 1. **Install Ollama**: Download from [ollama.com](https://ollama.com).
 2. **Pull a Model**: Run `ollama pull llama3` (or any other model supported by Ollama).
@@ -94,13 +94,13 @@ Configure the app via `.env` file or environment variables. All settings have `A
 - `ADV_OUTLIER_METHOD`: iqr, zscore, none
 - `ADV_CV_FOLDS`: 5
 
-### 🤝 Contributing
+### Contributing
 
 Contributions are welcome! Please ensure you follow the modular structure.
 
 - **UI changes** go in `app/ui/`
 - **Logic changes** go in `app/core/`, `app/ml/`, etc.
 
-### 📄 License
+### License
 
 MIT
